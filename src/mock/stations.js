@@ -149,6 +149,14 @@ const stations = [
     url: 'https://ice1.somafm.com/7soul-128-mp3',
     description: 'Vintage soul tracks from the original 45 RPM vinyl.'
   },
+  {
+    id: 20,
+    name: 'Reggae Sound System',
+    frequency: 'Online',
+    cover: 'https://api.somafm.com/logos/256/reggae256.png',
+    url: 'https://ice4.somafm.com/reggae-80-aac?_ic2=1770842150659',
+    description: 'Sumérgete en los ritmos relajantes del reggae con esta estación dedicada al género.'
+  },
 ];
 
 export default stations;
