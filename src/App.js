@@ -198,7 +198,7 @@ const App = () => {
     <div className={`app ${isDarkMode ? 'dark-mode' : 'bg-gray-50'}`}>
       <div className="container mx-auto p-4 md:p-8">
         <header className="flex flex-col md:flex-row items-center justify-between w-full mb-4 gap-4">
-          <h1 className="text-4xl font-bold">RadioWave</h1>
+          <h1 className="text-4xl font-bold">Radio Quantic</h1>
           <DonacionButton />
         </header>
 

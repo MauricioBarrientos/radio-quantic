@@ -1,10 +1,10 @@
-# Radiowave
+# Radio Quantic
 
-Radiowave es una aplicación web de reproductor de radio en línea construida con React. Permite a los usuarios explorar y escuchar una lista predefinida de estaciones de radio por internet.
+Radio Quantic es una aplicación web de reproductor de radio en línea construida con React. Permite a los usuarios explorar y escuchar una lista predefinida de estaciones de radio por internet.
 
 ## Tecnologías Utilizadas
 
-A continuación se detallan las principales tecnologías y herramientas utilizadas en el desarrollo de Radiowave:
+A continuación se detallan las principales tecnologías y herramientas utilizadas en el desarrollo de Radio Quantic:
 
 ### Lenguajes de Programación
 *   **JavaScript**
