@@ -3,6 +3,7 @@ import stationsData from './mock/stations'
 import RadioStationCard from './components/RadioStationCard'
 import AdvancedPlayer from './components/AdvancedPlayer'
 import DonacionButton from './components/DonacionButton'
+import VisitorMap from './components/VisitorMap'
 
 const BASE_RETRY_INTERVAL = 3000 // 3 seconds base retry time
 const MAX_RETRIES = 3
@@ -201,6 +202,12 @@ const App = () => {
           <h1 className="text-4xl font-bold">Radio Quantic</h1>
           <DonacionButton />
         </header>
+
+        {/* Visitor Map Section */}
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4 text-center">Tu ubicación</h2>
+          <VisitorMap />
+        </section>
 
         <main className="text-center">
           {stationsData.length > 0 ? (

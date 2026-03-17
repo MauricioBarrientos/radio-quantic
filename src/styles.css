@@ -121,3 +121,24 @@ input[type="range"] {
 .copy-button {
   @apply px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors duration-200;
 }
+
+/* Map Container Styles */
+.map-container {
+  @apply bg-gray-200 dark:bg-gray-800;
+}
+
+.map-container .leaflet-container {
+  @apply rounded-lg;
+}
+
+.map-container .leaflet-popup-content-wrapper {
+  @apply bg-white dark:bg-gray-700;
+}
+
+.map-container .leaflet-popup-content {
+  @apply text-gray-800 dark:text-gray-200;
+}
+
+.map-container .leaflet-popup-tip {
+  @apply bg-white dark:bg-gray-700;
+}
