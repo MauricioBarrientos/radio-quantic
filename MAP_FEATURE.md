@@ -37,17 +37,53 @@ Se ha añadido una nueva funcionalidad que muestra un mapa interactivo con la ge
 
 ### Uso
 
-El componente `VisitorMap` se integra en el componente principal `App.js` y se muestra en la parte superior de la página, justo debajo del encabezado.
+El componente `VisitorMap` se integra en el componente principal `App.js` y se muestra en la parte inferior de la página, justo encima del reproductor de audio.
 
 ```jsx
 import VisitorMap from './components/VisitorMap'
 
 // En el JSX
-<section className="mb-8">
-  <h2 className="text-2xl font-semibold mb-4 text-center">Tu ubicación</h2>
+<section className="mt-12 mb-8">
+  <div className="text-center mb-6">
+    <h2 className="text-3xl font-bold mb-2 flex items-center justify-center gap-3">
+      <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      </svg>
+      Tu ubicación actual
+    </h2>
+    <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+      Este mapa muestra tu ubicación aproximada basada en la geolocalización de tu dispositivo.
+    </p>
+  </div>
   <VisitorMap />
 </section>
 ```
+
+## Mejoras de diseño
+
+El mapa ha sido mejorado con las siguientes características de diseño:
+
+### Estilo visual mejorado
+- **Borde azul**: Un borde azul llamativo alrededor del mapa para destacarlo.
+- **Sombra profunda**: Efecto de sombra `shadow-2xl` para dar profundidad.
+- **Esquinas redondeadas**: Bordes redondeados `rounded-xl` para un aspecto moderno.
+- **Animación de entrada**: El mapa se desliza suavemente desde abajo al cargar.
+
+### Popup personalizado
+- **Diseño mejorado**: Popup con título destacado y formato de código para las coordenadas.
+- **Borde temático**: Borde azul que coincide con el tema de la aplicación.
+- **Compatibilidad con modo oscuro**: Colores adaptados para ambos temas.
+
+### Estados de carga y error
+- **Indicador de carga**: Animación de spinner con texto pulsante.
+- **Mensajes de error**: Alertas estilizadas con iconos para diferentes tipos de errores.
+- **Feedback visual**: Colores distintos para errores (rojo) y advertencias (amarillo).
+
+### Diseño responsive
+- **Altura adaptable**: `h-64` en móviles y `h-96` en escritorio.
+- **Ancho completo**: Se adapta al contenedor padre.
+- **Título descriptivo**: Sección con icono y descripción sobre la funcionalidad.
 
 ## Personalización
 
@@ -62,19 +98,38 @@ Los estilos del mapa se pueden personalizar en el archivo `src/styles.css`. Actu
 }
 
 .map-container .leaflet-container {
-  @apply rounded-lg;
+  @apply rounded-xl;
 }
 
 .map-container .leaflet-popup-content-wrapper {
-  @apply bg-white dark:bg-gray-700;
+  @apply bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400;
 }
 
 .map-container .leaflet-popup-content {
-  @apply text-gray-800 dark:text-gray-200;
+  @apply text-gray-800 dark:text-gray-200 p-4;
 }
 
 .map-container .leaflet-popup-tip {
-  @apply bg-white dark:bg-gray-700;
+  @apply bg-white dark:bg-gray-800;
+}
+
+/* Custom popup styles */
+.custom-popup .leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+
+.popup-content {
+  padding: 1rem;
+}
+
+.popup-content h3 {
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+}
+
+.dark-mode .popup-content h3 {
+  color: #60a5fa;
 }
 ```
 
@@ -85,6 +140,15 @@ En el componente `VisitorMap.js`, puedes ajustar:
 - **Nivel de zoom inicial**: Cambia el valor `zoom` en el componente `MapContainer`.
 - **Proveedor de tiles**: Modifica la URL en el componente `TileLayer` para usar diferentes proveedores de mapas.
 - **Opciones de geolocalización**: Ajusta los parámetros en `navigator.geolocation.getCurrentPosition()`.
+
+## Posición en la interfaz
+
+El mapa se ha colocado estratégicamente en la parte inferior de la página, justo encima del reproductor de audio. Esta ubicación ofrece varias ventajas:
+
+1. **No interfiere con la experiencia principal**: Los usuarios pueden explorar las estaciones de radio sin distracciones.
+2. **Fácil acceso**: Está disponible cuando el usuario termina de explorar las estaciones.
+3. **Integración con el flujo**: Se muestra después del contenido principal pero antes de los controles de reproducción.
+4. **Diseño equilibrado**: Ayuda a distribuir visualmente los elementos en la página.
 
 ## Requisitos del navegador
 
