@@ -34,81 +34,97 @@ const App = () => {
       audioRef.current = new Audio()
     }
 
-    const audio = audioRef.current;
+    const audio = audioRef.current
 
     const handleStreamEnded = () => {
-      console.log('Stream ended. Attempting to reconnect...');
-      if (currentStationRef.current && retryCountRef.current < MAX_RETRIES && !isRetryingRef.current) {
-        isRetryingRef.current = true;
-        retryCountRef.current += 1;
+      console.log('Stream ended. Attempting to reconnect...')
+      if (
+        currentStationRef.current &&
+        retryCountRef.current < MAX_RETRIES &&
+        !isRetryingRef.current
+      ) {
+        isRetryingRef.current = true
+        retryCountRef.current += 1
         // Exponential backoff: 3s, 6s, 12s
-        const retryDelay = BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1);
+        const retryDelay =
+          BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1)
         setTimeout(() => {
           if (currentStationRef.current && !isPlayingRef.current) {
-            audio.src = currentStationRef.current.url;
-            audio.load();
-            audio.play().catch(e => {
-              console.error("Error playing audio after retry:", e);
-              isRetryingRef.current = false;
-            });
-            setIsPlaying(true);
-            isRetryingRef.current = false;
+            audio.src = currentStationRef.current.url
+            audio.load()
+            audio.play().catch((e) => {
+              console.error('Error playing audio after retry:', e)
+              isRetryingRef.current = false
+            })
+            setIsPlaying(true)
+            isRetryingRef.current = false
           } else {
-            isRetryingRef.current = false;
+            isRetryingRef.current = false
           }
-        }, retryDelay);
+        }, retryDelay)
       } else {
-        console.log('Max retries reached or no current station. Stopping playback.');
-        setIsPlaying(false);
-        retryCountRef.current = 0;
-        isRetryingRef.current = false;
+        console.log(
+          'Max retries reached or no current station. Stopping playback.'
+        )
+        setIsPlaying(false)
+        retryCountRef.current = 0
+        isRetryingRef.current = false
       }
-    };
+    }
 
     const handleStreamError = (e) => {
-      console.error('Stream error:', e);
+      console.error('Stream error:', e)
       // Check if it's a network error that might be recoverable
-      const isNetworkError = e.target?.networkState === 3 || e.target?.readyState < 3;
-      if (currentStationRef.current && retryCountRef.current < MAX_RETRIES && !isRetryingRef.current && isNetworkError) {
-        isRetryingRef.current = true;
-        retryCountRef.current += 1;
+      const isNetworkError =
+        e.target?.networkState === 3 || e.target?.readyState < 3
+      if (
+        currentStationRef.current &&
+        retryCountRef.current < MAX_RETRIES &&
+        !isRetryingRef.current &&
+        isNetworkError
+      ) {
+        isRetryingRef.current = true
+        retryCountRef.current += 1
         // Exponential backoff: 3s, 6s, 12s
-        const retryDelay = BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1);
+        const retryDelay =
+          BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1)
         setTimeout(() => {
           if (currentStationRef.current && !isPlayingRef.current) {
-            audio.src = currentStationRef.current.url;
-            audio.load();
-            audio.play().catch(e => {
-              console.error("Error playing audio after error retry:", e);
-              isRetryingRef.current = false;
-            });
-            setIsPlaying(true);
-            isRetryingRef.current = false;
+            audio.src = currentStationRef.current.url
+            audio.load()
+            audio.play().catch((e) => {
+              console.error('Error playing audio after error retry:', e)
+              isRetryingRef.current = false
+            })
+            setIsPlaying(true)
+            isRetryingRef.current = false
           } else {
-            isRetryingRef.current = false;
+            isRetryingRef.current = false
           }
-        }, retryDelay);
+        }, retryDelay)
       } else {
-        console.log('Max retries reached after error or no current station. Stopping playback.');
-        setIsPlaying(false);
-        retryCountRef.current = 0;
-        isRetryingRef.current = false;
+        console.log(
+          'Max retries reached after error or no current station. Stopping playback.'
+        )
+        setIsPlaying(false)
+        retryCountRef.current = 0
+        isRetryingRef.current = false
       }
-    };
+    }
 
-    audio.addEventListener('ended', handleStreamEnded);
-    audio.addEventListener('error', handleStreamError);
+    audio.addEventListener('ended', handleStreamEnded)
+    audio.addEventListener('error', handleStreamError)
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause()
         audioRef.current.src = ''
-        audio.removeEventListener('ended', handleStreamEnded);
-        audio.removeEventListener('error', handleStreamError);
+        audio.removeEventListener('ended', handleStreamEnded)
+        audio.removeEventListener('error', handleStreamError)
       }
       // Reset the refs when component unmounts
-      retryCountRef.current = 0;
-      isRetryingRef.current = false;
+      retryCountRef.current = 0
+      isRetryingRef.current = false
     }
   }, []) // Empty dependency array since we're using refs
 
@@ -148,27 +164,27 @@ const App = () => {
           audioRef.current.pause()
           setIsPlaying(false)
         } else {
-          audioRef.current.play().catch(e => {
-            console.error("Error playing audio:", e);
-            setIsPlaying(false);
-          });
+          audioRef.current.play().catch((e) => {
+            console.error('Error playing audio:', e)
+            setIsPlaying(false)
+          })
           setIsPlaying(true)
         }
       } else {
         // Stop any ongoing retries when switching stations
-        isRetryingRef.current = false;
-        retryCountRef.current = 0;
+        isRetryingRef.current = false
+        retryCountRef.current = 0
 
         if (!audioRef.current) {
           audioRef.current = new Audio()
         }
         audioRef.current.pause()
         audioRef.current.src = station.url
-        audioRef.current.load();
-        audioRef.current.play().catch(e => {
-          console.error("Error playing audio:", e);
-          setIsPlaying(false);
-        });
+        audioRef.current.load()
+        audioRef.current.play().catch((e) => {
+          console.error('Error playing audio:', e)
+          setIsPlaying(false)
+        })
         setCurrentStation(station)
         setIsPlaying(true)
       }
@@ -181,10 +197,10 @@ const App = () => {
       audioRef.current.pause()
       setIsPlaying(false)
     } else if (currentStation) {
-      audioRef.current.play().catch(e => {
-        console.error("Error playing audio on play/pause:", e);
-        setIsPlaying(false);
-      });
+      audioRef.current.play().catch((e) => {
+        console.error('Error playing audio on play/pause:', e)
+        setIsPlaying(false)
+      })
       setIsPlaying(true)
     }
   }, [audioRef, currentStation, isPlaying])
@@ -192,7 +208,6 @@ const App = () => {
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-
 
   return (
     <div className={`app ${isDarkMode ? 'dark-mode' : 'bg-gray-50'}`}>
@@ -227,18 +242,6 @@ const App = () => {
 
         {/* Visitor Map Section - Moved to bottom */}
         <section className="mt-12 mb-8">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold mb-2 flex items-center justify-center gap-3">
-              <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-              Tu ubicación actual
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Este mapa muestra tu ubicación aproximada basada en la geolocalización de tu dispositivo.
-            </p>
-          </div>
           <VisitorMap />
         </section>
       </div>

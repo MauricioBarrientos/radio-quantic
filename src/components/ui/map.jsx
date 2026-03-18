@@ -27,12 +27,14 @@ function getDocumentTheme() {
 
 function getSystemTheme() {
   if (typeof window === 'undefined') return 'light'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
 }
 
 function useResolvedTheme(themeProp) {
-  const [detectedTheme, setDetectedTheme] = useState(() =>
-    getDocumentTheme() ?? getSystemTheme()
+  const [detectedTheme, setDetectedTheme] = useState(
+    () => getDocumentTheme() ?? getSystemTheme()
   )
 
   useEffect(() => {
@@ -123,7 +125,8 @@ export function Map({
   useEffect(() => {
     if (!containerRef.current) return
 
-    const initialStyle = resolvedTheme === 'dark' ? mapStyles.dark : mapStyles.light
+    const initialStyle =
+      resolvedTheme === 'dark' ? mapStyles.dark : mapStyles.light
     currentStyleRef.current = initialStyle
 
     const map = new maplibregl.Map({
@@ -208,7 +211,9 @@ export function Map({
     <div ref={containerRef} className={cn('relative h-full w-full', className)}>
       {(!isLoaded || loading) && <DefaultLoader />}
       {mapInstance && (
-        <MapContext.Provider value={contextValue}>{children}</MapContext.Provider>
+        <MapContext.Provider value={contextValue}>
+          {children}
+        </MapContext.Provider>
       )}
     </div>
   )
@@ -340,55 +345,67 @@ export function MapMarker({
   ...markerOptions
 }) {
   const { map } = useMap()
+  const elementRef = useRef(null)
+  const markerRef = useRef(null)
   const callbacksRef = useRef({ onClick, onMouseEnter, onMouseLeave })
   callbacksRef.current = { onClick, onMouseEnter, onMouseLeave }
 
-  const marker = useMemo(() => {
+  useEffect(() => {
+    if (!map || !elementRef.current) return
+
     const markerInstance = new maplibregl.Marker({
       ...markerOptions,
-      element: document.createElement('div'),
+      element: elementRef.current,
       draggable,
     }).setLngLat([longitude, latitude])
+
+    markerRef.current = markerInstance
+    markerInstance.addTo(map)
+
+    return () => {
+      markerInstance.remove()
+    }
+  }, [map, draggable, markerOptions])
+
+  useEffect(() => {
+    if (markerRef.current) {
+      markerRef.current.setLngLat([longitude, latitude])
+    }
+  }, [longitude, latitude])
+
+  useEffect(() => {
+    if (!elementRef.current) return
 
     const handleClick = (e) => callbacksRef.current.onClick?.(e)
     const handleMouseEnter = (e) => callbacksRef.current.onMouseEnter?.(e)
     const handleMouseLeave = (e) => callbacksRef.current.onMouseLeave?.(e)
 
-    markerInstance.getElement()?.addEventListener('click', handleClick)
-    markerInstance.getElement()?.addEventListener('mouseenter', handleMouseEnter)
-    markerInstance.getElement()?.addEventListener('mouseleave', handleMouseLeave)
+    elementRef.current.addEventListener('click', handleClick)
+    elementRef.current.addEventListener('mouseenter', handleMouseEnter)
+    elementRef.current.addEventListener('mouseleave', handleMouseLeave)
 
-    return markerInstance
-  }, [longitude, latitude, draggable])
-
-  useEffect(() => {
-    if (!map) return
-    marker.addTo(map)
     return () => {
-      marker.remove()
+      elementRef.current?.removeEventListener('click', handleClick)
+      elementRef.current?.removeEventListener('mouseenter', handleMouseEnter)
+      elementRef.current?.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [map])
-
-  if (
-    marker.getLngLat().lng !== longitude ||
-    marker.getLngLat().lat !== latitude
-  ) {
-    marker.setLngLat([longitude, latitude])
-  }
+  }, [])
 
   return (
-    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500">
+    <div ref={elementRef} className="flex items-center justify-center">
       {children || (
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="6" cy="6" r="6" fill="white" />
-          <circle cx="6" cy="6" r="3" fill="#3B82F6" />
-        </svg>
+        <div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="6" cy="6" r="6" fill="white" />
+            <circle cx="6" cy="6" r="3" fill="#3B82F6" />
+          </svg>
+        </div>
       )}
     </div>
   )
@@ -448,8 +465,17 @@ export function MapPopup({
           onClick={handleClose}
           className="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" />
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
       )}
@@ -591,7 +617,12 @@ Map.propTypes = {
 }
 
 MapControls.propTypes = {
-  position: PropTypes.oneOf(['top-left', 'top-right', 'bottom-left', 'bottom-right']),
+  position: PropTypes.oneOf([
+    'top-left',
+    'top-right',
+    'bottom-left',
+    'bottom-right',
+  ]),
   showZoom: PropTypes.bool,
   showLocate: PropTypes.bool,
   showFullscreen: PropTypes.bool,
@@ -619,7 +650,8 @@ MapPopup.propTypes = {
 }
 
 MapRoute.propTypes = {
-  coordinates: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  coordinates: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))
+    .isRequired,
   color: PropTypes.string,
   width: PropTypes.number,
   opacity: PropTypes.number,
