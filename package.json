@@ -1,22 +1,29 @@
 {
   "name": "radio-quantic",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "dev": "react-scripts start",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "dev": "react-app-rewired start",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "dependencies": {
     "bootstrap": "^5.3.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.577.0",
+    "maplibre-gl": "^5.20.2",
+    "prop-types": "^15.8.1",
     "qrcode.react": "^4.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^4.2.1",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "main": "/index.js",
   "browserslist": {
@@ -32,6 +39,7 @@
     ]
   },
   "devDependencies": {
+    "customize-cra": "^1.0.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -40,6 +48,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
+    "react-app-rewired": "^2.2.1",
     "webpack": "^5.99.8"
   },
   "lint-staged": {

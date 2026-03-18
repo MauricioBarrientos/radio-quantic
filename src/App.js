@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import stationsData from './mock/stations'
 import RadioStationCard from './components/RadioStationCard'
 import AdvancedPlayer from './components/AdvancedPlayer'
-import DonacionButton from './components/DonacionButton'
 import VisitorMap from './components/VisitorMap'
 
 const BASE_RETRY_INTERVAL = 3000 // 3 seconds base retry time
@@ -200,7 +199,6 @@ const App = () => {
       <div className="container mx-auto p-4 md:p-8">
         <header className="flex flex-col md:flex-row items-center justify-between w-full mb-4 gap-4">
           <h1 className="text-4xl font-bold">Radio Quantic</h1>
-          <DonacionButton />
         </header>
 
         <main className="text-center">
