@@ -159,7 +159,7 @@ const stations = [
   },
   {
     id: 22,
-    name: 'vibes-fm',
+    name: 'Vibe Fm',
     frequency: 'Online',
     cover:
       'https://static.mytuner.mobi/media/tvos_radios/468/vibes-fm-938.d310f083.jpg',
