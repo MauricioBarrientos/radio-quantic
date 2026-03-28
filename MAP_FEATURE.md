@@ -2,15 +2,15 @@
 
 ## Descripción
 
-Se ha añadido una nueva funcionalidad que muestra un mapa interactivo con la geolocalización del visitante. Esta característica permite a los usuarios ver su ubicación actual en un mapa cuando visitan la página web.
+Se ha añadido una nueva funcionalidad que muestra un mapa interactivo con la ubicación aproximada del visitante. Esta característica permite a los usuarios ver su ubicación estimada en un mapa cuando visitan la página web.
 
 ## Características
 
-- **Geolocalización automática**: El mapa detecta automáticamente la ubicación del usuario utilizando la API de geolocalización del navegador.
+- **Geolocalización automática por IP**: El mapa detecta automáticamente la ubicación aproximada del usuario mediante servicios de geolocalización por IP.
 - **Mapa interactivo**: Los usuarios pueden hacer zoom, arrastrar y explorar el mapa.
 - **Marcador de ubicación**: Un marcador muestra la posición exacta del usuario con coordenadas de latitud y longitud.
 - **Popup informativo**: Al hacer clic en el marcador, se muestra un popup con la información de la ubicación.
-- **Manejo de errores**: Si la geolocalización falla o no está soportada, se muestra un mensaje apropiado.
+- **Manejo de errores**: Si la consulta de ubicación por IP falla, se muestra un mensaje apropiado.
 - **Diseño responsive**: El mapa se adapta a diferentes tamaños de pantalla.
 - **Compatibilidad con modo oscuro**: El mapa y sus elementos se adaptan al tema oscuro de la aplicación.
 
@@ -53,7 +53,7 @@ import VisitorMap from './components/VisitorMap'
       Tu ubicación actual
     </h2>
     <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-      Este mapa muestra tu ubicación aproximada basada en la geolocalización de tu dispositivo.
+      Este mapa muestra tu ubicación aproximada basada en la dirección IP de tu conexión.
     </p>
   </div>
   <VisitorMap />
@@ -139,7 +139,7 @@ En el componente `VisitorMap.js`, puedes ajustar:
 
 - **Nivel de zoom inicial**: Cambia el valor `zoom` en el componente `MapContainer`.
 - **Proveedor de tiles**: Modifica la URL en el componente `TileLayer` para usar diferentes proveedores de mapas.
-- **Opciones de geolocalización**: Ajusta los parámetros en `navigator.geolocation.getCurrentPosition()`.
+- **Proveedor de ubicación por IP**: Ajusta los endpoints de `fetch` (por ejemplo, `ipapi.co` e `ipwho.is`) para cambiar de proveedor o añadir fallback.
 
 ## Posición en la interfaz
 
@@ -152,34 +152,33 @@ El mapa se ha colocado estratégicamente en la parte inferior de la página, jus
 
 ## Requisitos del navegador
 
-- Soporte para la API de geolocalización.
 - JavaScript habilitado.
-- Conexión a Internet para cargar los tiles del mapa.
+- Conexión a Internet para cargar los tiles del mapa y consultar el servicio de ubicación por IP.
 
 ## Permisos
 
-La aplicación solicitará permiso al usuario para acceder a su ubicación. Este permiso debe ser concedido para que el mapa muestre la ubicación correcta.
+La aplicación no solicita permisos de ubicación del navegador. La posición se estima automáticamente mediante la IP pública del usuario.
 
 ## Limitaciones
 
-- La precisión de la geolocalización depende del dispositivo y la conexión del usuario.
-- En algunos entornos (como HTTPS local o sirames), la geolocalización puede no funcionar correctamente.
-- Los usuarios pueden denegar el permiso de ubicación, en cuyo caso se mostrará un mensaje de error.
+- La precisión depende del proveedor de geolocalización por IP y puede variar según ISP/VPN/proxy.
+- En algunos entornos, la IP puede resolverse a una ciudad o región cercana, no a una dirección exacta.
+- Si el proveedor de IP no responde o es bloqueado, se mostrará un mensaje de error.
 
 ## Ejemplo de visualización
 
 Cuando un usuario visita la página:
 
-1. Se muestra un mensaje "Obteniendo tu ubicación..." mientras se carga la geolocalización.
+1. Se muestra un mensaje "Obteniendo tu ubicación aproximada por IP..." mientras se consulta el servicio.
 2. Una vez obtenida la ubicación, se muestra el mapa centrado en la posición del usuario.
-3. Un marcador indica la ubicación exacta con un popup que muestra las coordenadas.
+3. Un marcador indica la ubicación aproximada con coordenadas estimadas.
 4. Si hay un error, se muestra un mensaje apropiado.
 
 ## Solución de problemas
 
 - **El mapa no se muestra**: Verifica que la conexión a Internet esté activa y que no haya bloqueadores de contenido interfiriendo.
-- **La ubicación es incorrecta**: Asegúrate de que los servicios de ubicación estén habilitados en el dispositivo y que el navegador tenga permiso para acceder a ellos.
-- **Error de geolocalización**: Algunos navegadores pueden requerir que el sitio se sirva sobre HTTPS para que la geolocalización funcione correctamente.
+- **La ubicación es imprecisa**: Es normal en geolocalización por IP; prueba sin VPN/proxy o con otra red para mejorar la estimación.
+- **Error de ubicación por IP**: Verifica conectividad saliente a los proveedores de IP y que no haya bloqueadores/redes corporativas filtrando esas APIs.
 
 ## Futuras mejoras
 

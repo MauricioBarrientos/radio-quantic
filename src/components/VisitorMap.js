@@ -8,26 +8,64 @@ const VisitorMap = () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setPosition([position.coords.longitude, position.coords.latitude])
-            setLoading(false)
-          },
-          (error) => {
-            setError(error.message)
-            setLoading(false)
-          },
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        )
-      } else {
-        setError('Geolocalización no soportada por este navegador.')
+    const getLocationByIp = async () => {
+      const services = [
+        {
+          url: 'https://ipapi.co/json/',
+          extract: (data) => ({
+            latitude: Number(data?.latitude),
+            longitude: Number(data?.longitude),
+          }),
+        },
+        {
+          url: 'https://ipwho.is/',
+          extract: (data) => ({
+            latitude: Number(data?.latitude),
+            longitude: Number(data?.longitude),
+          }),
+        },
+      ]
+
+      try {
+        for (const service of services) {
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 8000)
+
+          try {
+            const response = await fetch(service.url, {
+              signal: controller.signal,
+            })
+
+            if (!response.ok) {
+              continue
+            }
+
+            const data = await response.json()
+            const coords = service.extract(data)
+
+            const hasValidCoords =
+              Number.isFinite(coords.latitude) &&
+              Number.isFinite(coords.longitude)
+
+            if (hasValidCoords) {
+              setPosition([coords.longitude, coords.latitude])
+              setError(null)
+              return
+            }
+          } catch {
+            // Try next provider
+          } finally {
+            clearTimeout(timeoutId)
+          }
+        }
+
+        setError('No se pudo obtener tu ubicación aproximada por IP.')
+      } finally {
         setLoading(false)
       }
     }
 
-    getLocation()
+    getLocationByIp()
   }, [])
 
   if (loading) {
@@ -54,7 +92,7 @@ const VisitorMap = () => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-          Obteniendo tu ubicación...
+          Obteniendo tu ubicación aproximada por IP...
         </p>
       </Card>
     )
@@ -75,7 +113,8 @@ const VisitorMap = () => {
               clipRule="evenodd"
             />
           </svg>
-          <span className="font-medium">Error de geolocalización:</span> {error}
+          <span className="font-medium">Error de ubicación por IP:</span>{' '}
+          {error}
         </div>
       </Card>
     )
@@ -97,7 +136,7 @@ const VisitorMap = () => {
             />
           </svg>
           <span className="font-medium">Ubicación no disponible:</span> No se
-          pudo obtener tu ubicación.
+           pudo obtener tu ubicación aproximada.
         </div>
       </Card>
     )
@@ -106,7 +145,7 @@ const VisitorMap = () => {
   return (
     <Card className="h-96 md:h-[600px] p-0 overflow-hidden border-2 border-blue-500 dark:border-blue-400 shadow-2xl">
       <Map center={[0, 20]} zoom={1.5}>
-        <MapControls showLocate position="bottom-right" />
+        <MapControls position="bottom-right" />
         {position && (
           <MapMarker longitude={position[0]} latitude={position[1]}>
             <div className="relative">
