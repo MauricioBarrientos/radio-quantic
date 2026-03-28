@@ -244,6 +244,20 @@ const App = () => {
         <section className="mt-12 mb-8">
           <VisitorMap />
         </section>
+
+        <footer className="mb-24 rounded-2xl border border-white/10 bg-white/5 px-6 py-8 text-center backdrop-blur-sm">
+          <p className="text-xs uppercase tracking-[0.3em] text-cyan-300/80">
+            Radio Quantic
+          </p>
+          <p className="mt-3 text-lg text-gray-100 md:text-xl">
+            Let the right frequency find you exactly when you need it most.{' '}
+            {'<3'}
+          </p>
+          <p className="mt-2 text-sm text-gray-400">
+            Thanks to every station sharing its signal and spirit with this
+            space.
+          </p>
+        </footer>
       </div>
       <AdvancedPlayer
         currentStation={currentStation}

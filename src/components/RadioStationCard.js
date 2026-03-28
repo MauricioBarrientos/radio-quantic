@@ -40,11 +40,10 @@ const RadioStationCard = React.memo(({ station, isPlaying, onPlay }) => {
         <h5 className="font-bold text-lg text-gray-200 truncate">
           {station.name}
         </h5>
-        <p className="text-sm text-gray-400">
-          {station.frequency}
-        </p>
-        <p className="text-xs text-gray-300 mt-1">
-          {station.description}
+        <p className="text-sm text-gray-400">{station.frequency}</p>
+        <p className="text-xs text-gray-300 mt-1">{station.description}</p>
+        <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mt-3">
+          Stream credits: official station broadcast
         </p>
       </div>
 
