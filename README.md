@@ -1,48 +1,50 @@
 # Radio Quantic
 
-Radio Quantic es una aplicación web de reproductor de radio en línea construida con React. Permite a los usuarios explorar y escuchar una lista predefinida de estaciones de radio por internet.
+Radio Quantic es una aplicación web para escuchar radios online. La interfaz
+presenta una grilla de emisoras curadas, permite reproducir streams en vivo con
+un reproductor fijo y muestra la ubicación aproximada del visitante en un mapa.
 
-## Tecnologías Utilizadas
+## Stack
 
-A continuación se detallan las principales tecnologías y herramientas utilizadas en el desarrollo de Radio Quantic:
+- React 18
+- `react-app-rewired` sobre Create React App
+- Tailwind CSS para utilidades de estilo
+- Bootstrap para estilos base cargados globalmente
+- MapLibre GL para el mapa interactivo
+- ESLint + Prettier para calidad de código
 
-### Lenguajes de Programación
-*   **JavaScript**
+## Estructura principal
 
-### Frameworks
-*   **React**: `^18.0.0`
+- `src/App.js`: coordina la pantalla principal, el estado de reproducción y los
+  reintentos de conexión del stream.
+- `src/mock/stations.js`: catálogo estático de emisoras.
+- `src/components/RadioStationCard.js`: tarjeta de cada emisora.
+- `src/components/AdvancedPlayer.js`: reproductor inferior fijo.
+- `src/components/VisitorMap.js`: mapa y estados de geolocalización.
+- `src/components/ui/`: primitivas reutilizables para tarjeta y mapa.
+- `public/`: archivos públicos como `index.html`, favicon y política de
+  privacidad.
 
-### Librerías Principales
-*   **Bootstrap**: `^5.3.6` (Para estilos y componentes UI)
-*   **React DOM**: `^18.0.0` (Punto de entrada de React para el DOM)
-*   **React Icons**: `^5.5.0` (Colección de iconos para la interfaz de usuario)
+## Scripts
 
-### Bases de Datos
-Actualmente, la aplicación no utiliza una base de datos externa. Los datos de las estaciones de radio se gestionan de forma local en `src/mock/stations.js`.
+- `npm start`: levanta el entorno de desarrollo.
+- `npm run dev`: alias de `npm start`.
+- `npm run build`: genera el build de producción en `build/`.
+- `npm run test`: ejecuta el runner de pruebas de CRA.
+- `npm run lint`: revisa el código con ESLint.
+- `npm run format`: formatea el proyecto con Prettier.
 
-### Herramientas de Build/Despliegue
-*   **React Scripts**: `^5.0.1` (Scripts para iniciar, construir y probar aplicaciones React, parte de Create React App)
-*   **Webpack**: `^5.99.8` (Empaquetador de módulos, utilizado internamente por React Scripts)
-*   **ESLint**: `^8.57.1` (Herramienta de linting para identificar patrones problemáticos en el código JavaScript)
-*   **Prettier**: `^3.6.2` (Formateador de código para mantener un estilo consistente)
-*   **Husky**: `^9.1.7` (Herramienta para gestionar ganchos de Git, como pre-commit)
-*   **Lint-Staged**: `^16.1.5` (Ejecuta linters en archivos staged de Git)
+## Comportamiento actual
 
-## Estructura del Proyecto
+- Las emisoras se cargan desde datos locales; no hay backend ni base de datos.
+- El audio se reproduce con `HTMLAudioElement`.
+- Si un stream falla por red, la app intenta reconectar hasta 3 veces con
+  backoff exponencial.
+- El mapa solicita permiso de geolocalización y marca la posición del usuario
+  cuando el navegador lo permite.
 
-El proyecto sigue una estructura de componentes modular típica de React:
+## Notas de mantenimiento
 
-*   `src/App.js`: Componente principal que orquesta la aplicación.
-*   `src/components/`: Contiene los componentes reutilizables de la UI (e.g., `RadioStationCard`, `AdvancedPlayer`).
-*   `src/mock/stations.js`: Almacena los datos mock de las estaciones de radio.
-*   `public/`: Archivos estáticos y `index.html`.
-
-## Scripts Disponibles
-
-En el directorio del proyecto, puedes ejecutar:
-
-*   `npm start`: Ejecuta la aplicación en modo de desarrollo.
-*   `npm run build`: Compila la aplicación para producción en la carpeta `build`.
-*   `npm test`: Lanza el corredor de pruebas en modo de vigilancia interactivo.
-*   `npm run lint`: Ejecuta ESLint para verificar problemas de código.
-*   `npm run format`: Formatea el código usando Prettier.
+- El proyecto no usa service workers.
+- La lista de dependencias está ajustada al código activo del repositorio.
+- Si agregas nuevas emisoras, el cambio se hace en `src/mock/stations.js`.

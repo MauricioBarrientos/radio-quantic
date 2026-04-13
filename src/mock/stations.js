@@ -65,7 +65,6 @@ const stations = [
     description:
       'La versión francesa de Rinse FM, con lo mejor de la escena underground.',
   },
-
   {
     id: 10,
     name: 'Groove Salad Classic',
@@ -97,7 +96,7 @@ const stations = [
     cover: 'https://api.somafm.com/logos/256/insound-256.jpg',
     url: 'https://ice1.somafm.com/insound-128-aac',
     description:
-      'Pop europeo hipster de los años 60 y 70, donde las melodías\npsicodélicas se combinan con vibraciones maravillosas.',
+      'Pop europeo hipster de los años 60 y 70, donde las melodías psicodélicas se combinan con vibraciones maravillosas.',
   },
   {
     id: 14,
@@ -109,21 +108,24 @@ const stations = [
     description:
       'Música espacial y ambiental para una experiencia auditiva fuera de este mundo.',
   },
-    {
+  {
     id: 15,
     name: 'FluxFM Chillhop',
     frequency: 'Online',
-    cover: 'https://www.radio.es/300/fluxfmchillhop.jpeg?version=3058137aaaeedf95e04d0c2ae097520e',
+    cover:
+      'https://www.radio.es/300/fluxfmchillhop.jpeg?version=3058137aaaeedf95e04d0c2ae097520e',
     url: 'https://channels.fluxfm.de/chillhop/externalembedflxhp/stream.aac',
-    description: 'Relajante música chillhop de FluxFM.'
+    description: 'Relajante música chillhop de FluxFM.',
   },
   {
     id: 16,
     name: 'KoolFm',
     frequency: 'Online',
-    cover: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Kool_FM_London_logo.png/250px-Kool_FM_London_logo.png',
+    cover:
+      'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Kool_FM_London_logo.png/250px-Kool_FM_London_logo.png',
     url: 'https://admin.stream.rinse.fm/proxy/kool/stream',
-    description: 'Una estación de radio icónica con lo mejor de la música electrónica y urbana. en vivo desde London UK.'
+    description:
+      'Una estación de radio icónica con lo mejor de la música electrónica y urbana, en vivo desde London, UK.',
   },
   {
     id: 17,
@@ -131,7 +133,7 @@ const stations = [
     frequency: 'Online',
     cover: 'https://au.radio.net/300/subfm.png',
     url: 'https://streamlive1.hearthis.at:8000/9061142.ogg?time=1758572814',
-    description: 'Where Bass Matters.'
+    description: 'Where Bass Matters.',
   },
   {
     id: 18,
@@ -139,7 +141,8 @@ const stations = [
     frequency: 'Online',
     cover: 'https://api.somafm.com/logos/256/secretagent256.png',
     url: 'https://ice4.somafm.com/secretagent-64-aac',
-    description: 'La banda sonora para una vida elegante, misteriosa y peligrosa.'
+    description:
+      'La banda sonora para una vida elegante, misteriosa y peligrosa.',
   },
   {
     id: 19,
@@ -147,7 +150,7 @@ const stations = [
     frequency: 'Online',
     cover: 'https://somafm.com/logos/120/7soul120.jpg',
     url: 'https://ice1.somafm.com/7soul-128-mp3',
-    description: 'Vintage soul tracks from the original 45 RPM vinyl.'
+    description: 'Vintage soul tracks from the original 45 RPM vinyl.',
   },
   {
     id: 20,
@@ -155,7 +158,8 @@ const stations = [
     frequency: 'Online',
     cover: 'https://api.somafm.com/logos/256/reggae256.png',
     url: 'https://ice4.somafm.com/reggae-80-aac?_ic2=1770842150659',
-    description: 'Sumérgete en los ritmos relajantes del reggae con esta estación dedicada al género.'
+    description:
+      'Sumérgete en los ritmos relajantes del reggae con esta estación dedicada al género.',
   },
   {
     id: 22,
@@ -164,9 +168,8 @@ const stations = [
     cover:
       'https://static.mytuner.mobi/media/tvos_radios/468/vibes-fm-938.d310f083.jpg',
     url: 'https://a10.asurahosting.com:9040/radio.mp3?_ic2=1774657170016',
-    description: 'Vibes FM en vivo.'
+    description: 'Vibes FM en vivo.',
   },
-];
+]
 
-export default stations;
-
+export default stations

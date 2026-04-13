@@ -4,23 +4,20 @@ import RadioStationCard from './components/RadioStationCard'
 import AdvancedPlayer from './components/AdvancedPlayer'
 import VisitorMap from './components/VisitorMap'
 
-const BASE_RETRY_INTERVAL = 3000 // 3 seconds base retry time
+const BASE_RETRY_INTERVAL = 3000
 const MAX_RETRIES = 3
 
 const App = () => {
   const [currentStation, setCurrentStation] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const audioRef = useRef(null)
-  const isDarkMode = true
   const [showScroll, setShowScroll] = useState(false)
+  const audioRef = useRef(null)
   const retryCountRef = useRef(0)
-  const isRetryingRef = useRef(false) // Flag to prevent multiple retries
-
-  // Use refs to keep track of current state in event handlers
+  const isRetryingRef = useRef(false)
   const currentStationRef = useRef(null)
   const isPlayingRef = useRef(false)
+  const isDarkMode = true
 
-  // Update refs when state changes
   useEffect(() => {
     currentStationRef.current = currentStation
   }, [currentStation])
@@ -36,80 +33,59 @@ const App = () => {
 
     const audio = audioRef.current
 
-    const handleStreamEnded = () => {
-      console.log('Stream ended. Attempting to reconnect...')
+    const retryPlayback = (label) => {
       if (
-        currentStationRef.current &&
-        retryCountRef.current < MAX_RETRIES &&
-        !isRetryingRef.current
+        !currentStationRef.current ||
+        retryCountRef.current >= MAX_RETRIES ||
+        isRetryingRef.current
       ) {
-        isRetryingRef.current = true
-        retryCountRef.current += 1
-        // Exponential backoff: 3s, 6s, 12s
-        const retryDelay =
-          BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1)
-        setTimeout(() => {
-          if (currentStationRef.current && !isPlayingRef.current) {
-            audio.src = currentStationRef.current.url
-            audio.load()
-            audio.play().catch((e) => {
-              console.error('Error playing audio after retry:', e)
-              isRetryingRef.current = false
-            })
-            setIsPlaying(true)
-            isRetryingRef.current = false
-          } else {
-            isRetryingRef.current = false
-          }
-        }, retryDelay)
-      } else {
-        console.log(
-          'Max retries reached or no current station. Stopping playback.'
-        )
+        console.log(`${label}. Stopping playback.`)
         setIsPlaying(false)
         retryCountRef.current = 0
         isRetryingRef.current = false
+        return
       }
+
+      isRetryingRef.current = true
+      retryCountRef.current += 1
+
+      const retryDelay =
+        BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1)
+
+      setTimeout(() => {
+        if (currentStationRef.current && !isPlayingRef.current) {
+          audio.src = currentStationRef.current.url
+          audio.load()
+          audio.play().catch((error) => {
+            console.error('Error replaying audio stream:', error)
+            isRetryingRef.current = false
+          })
+          setIsPlaying(true)
+        }
+
+        isRetryingRef.current = false
+      }, retryDelay)
     }
 
-    const handleStreamError = (e) => {
-      console.error('Stream error:', e)
-      // Check if it's a network error that might be recoverable
+    const handleStreamEnded = () => {
+      console.log('Stream ended. Attempting to reconnect...')
+      retryPlayback('Max retries reached or no current station')
+    }
+
+    const handleStreamError = (event) => {
+      console.error('Stream error:', event)
+
       const isNetworkError =
-        e.target?.networkState === 3 || e.target?.readyState < 3
-      if (
-        currentStationRef.current &&
-        retryCountRef.current < MAX_RETRIES &&
-        !isRetryingRef.current &&
-        isNetworkError
-      ) {
-        isRetryingRef.current = true
-        retryCountRef.current += 1
-        // Exponential backoff: 3s, 6s, 12s
-        const retryDelay =
-          BASE_RETRY_INTERVAL * Math.pow(2, retryCountRef.current - 1)
-        setTimeout(() => {
-          if (currentStationRef.current && !isPlayingRef.current) {
-            audio.src = currentStationRef.current.url
-            audio.load()
-            audio.play().catch((e) => {
-              console.error('Error playing audio after error retry:', e)
-              isRetryingRef.current = false
-            })
-            setIsPlaying(true)
-            isRetryingRef.current = false
-          } else {
-            isRetryingRef.current = false
-          }
-        }, retryDelay)
-      } else {
-        console.log(
-          'Max retries reached after error or no current station. Stopping playback.'
-        )
-        setIsPlaying(false)
-        retryCountRef.current = 0
-        isRetryingRef.current = false
+        event.target?.networkState === 3 || event.target?.readyState < 3
+
+      if (isNetworkError) {
+        retryPlayback('Max retries reached after error or no current station')
+        return
       }
+
+      setIsPlaying(false)
+      retryCountRef.current = 0
+      isRetryingRef.current = false
     }
 
     audio.addEventListener('ended', handleStreamEnded)
@@ -122,14 +98,16 @@ const App = () => {
         audio.removeEventListener('ended', handleStreamEnded)
         audio.removeEventListener('error', handleStreamError)
       }
-      // Reset the refs when component unmounts
+
       retryCountRef.current = 0
       isRetryingRef.current = false
     }
-  }, []) // Empty dependency array since we're using refs
+  }, [])
 
   useEffect(() => {
     document.body.className = isDarkMode ? 'dark-mode' : ''
+    document.documentElement.classList.toggle('dark', isDarkMode)
+    document.documentElement.classList.toggle('light', !isDarkMode)
   }, [isDarkMode])
 
   useEffect(() => {
@@ -148,9 +126,10 @@ const App = () => {
   }, [showScroll])
 
   useEffect(() => {
-    const handleContextMenu = (e) => {
-      e.preventDefault()
+    const handleContextMenu = (event) => {
+      event.preventDefault()
     }
+
     document.addEventListener('contextmenu', handleContextMenu)
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu)
@@ -164,46 +143,51 @@ const App = () => {
           audioRef.current.pause()
           setIsPlaying(false)
         } else {
-          audioRef.current.play().catch((e) => {
-            console.error('Error playing audio:', e)
+          audioRef.current.play().catch((error) => {
+            console.error('Error playing audio:', error)
             setIsPlaying(false)
           })
           setIsPlaying(true)
         }
-      } else {
-        // Stop any ongoing retries when switching stations
-        isRetryingRef.current = false
-        retryCountRef.current = 0
-
-        if (!audioRef.current) {
-          audioRef.current = new Audio()
-        }
-        audioRef.current.pause()
-        audioRef.current.src = station.url
-        audioRef.current.load()
-        audioRef.current.play().catch((e) => {
-          console.error('Error playing audio:', e)
-          setIsPlaying(false)
-        })
-        setCurrentStation(station)
-        setIsPlaying(true)
+        return
       }
+
+      isRetryingRef.current = false
+      retryCountRef.current = 0
+
+      if (!audioRef.current) {
+        audioRef.current = new Audio()
+      }
+
+      audioRef.current.pause()
+      audioRef.current.src = station.url
+      audioRef.current.load()
+      audioRef.current.play().catch((error) => {
+        console.error('Error playing audio:', error)
+        setIsPlaying(false)
+      })
+
+      setCurrentStation(station)
+      setIsPlaying(true)
     },
-    [audioRef, currentStation, isPlaying]
+    [currentStation, isPlaying]
   )
 
   const handlePlayPause = useCallback(() => {
     if (isPlaying) {
       audioRef.current.pause()
       setIsPlaying(false)
-    } else if (currentStation) {
-      audioRef.current.play().catch((e) => {
-        console.error('Error playing audio on play/pause:', e)
+      return
+    }
+
+    if (currentStation) {
+      audioRef.current.play().catch((error) => {
+        console.error('Error playing audio on play/pause:', error)
         setIsPlaying(false)
       })
       setIsPlaying(true)
     }
-  }, [audioRef, currentStation, isPlaying])
+  }, [currentStation, isPlaying])
 
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -212,7 +196,7 @@ const App = () => {
   return (
     <div className={`app ${isDarkMode ? 'dark-mode' : 'bg-gray-50'}`}>
       <div className="container mx-auto p-4 md:p-8">
-        <header className="flex flex-col md:flex-row items-center justify-between w-full mb-4 gap-4">
+        <header className="mb-4 flex w-full flex-col items-center justify-between gap-4 md:flex-row">
           <h1 className="text-4xl font-bold">Radio Quantic</h1>
         </header>
 
@@ -229,19 +213,18 @@ const App = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
+            <div className="py-16 text-center">
               <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-300">
                 No se encontraron estaciones
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">
+              <p className="mt-2 text-gray-500 dark:text-gray-400">
                 Intenta con otra búsqueda.
               </p>
             </div>
           )}
         </main>
 
-        {/* Visitor Map Section - Moved to bottom */}
-        <section className="mt-12 mb-8">
+        <section className="mb-8 mt-12">
           <VisitorMap />
         </section>
 
@@ -259,12 +242,14 @@ const App = () => {
           </p>
         </footer>
       </div>
+
       <AdvancedPlayer
         currentStation={currentStation}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         audioRef={audioRef}
       />
+
       {showScroll && (
         <button
           onClick={scrollTop}

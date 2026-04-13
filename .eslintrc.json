@@ -23,7 +23,7 @@
   },
   "overrides": [
     {
-      "files": ["tailwind.config.js"],
+      "files": ["tailwind.config.js", "config-overrides.js"],
       "env": {
         "node": true
       }
