@@ -193,16 +193,74 @@ const App = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const scrollToStations = () => {
+    document
+      .getElementById('stations-grid')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className={`app ${isDarkMode ? 'dark-mode' : 'bg-gray-50'}`}>
       <div className="container mx-auto p-4 md:p-8">
-        <header className="mb-4 flex w-full flex-col items-center justify-between gap-4 md:flex-row">
-          <h1 className="text-4xl font-bold">Radio Quantic</h1>
+        <header className="hero-header mb-10 overflow-hidden rounded-[2rem] border border-white/10">
+          <div className="hero-header__glow hero-header__glow--cyan" />
+          <div className="hero-header__glow hero-header__glow--blue" />
+          <div className="hero-header__grid">
+            <div className="hero-header__copy">
+              <p className="hero-header__eyebrow">Curated online radio</p>
+              <h1 className="hero-header__title">Radio Quantic</h1>
+              <p className="hero-header__subtitle">
+                Frecuencias seleccionadas para descubrir electrónica, soul,
+                dub y estaciones que merecen quedarse sonando.
+              </p>
+              <div className="hero-header__actions">
+                <button
+                  type="button"
+                  onClick={scrollToStations}
+                  className="hero-header__cta"
+                >
+                  Explorar estaciones
+                </button>
+                <div className="hero-header__meta">
+                  <span className="hero-header__meta-value">
+                    {stationsData.length}
+                  </span>
+                  <span className="hero-header__meta-label">
+                    estaciones seleccionadas
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-header__panel" aria-hidden="true">
+              <div className="hero-header__badge">
+                <span className="hero-header__badge-dot" />
+                Signal live
+              </div>
+              <div className="hero-header__visual">
+                <div className="hero-header__dial">
+                  <span className="hero-header__dial-ring hero-header__dial-ring--outer" />
+                  <span className="hero-header__dial-ring hero-header__dial-ring--inner" />
+                  <span className="hero-header__dial-core">RQ</span>
+                </div>
+                <div className="hero-header__bars">
+                  <span className="hero-header__bar hero-header__bar--1" />
+                  <span className="hero-header__bar hero-header__bar--2" />
+                  <span className="hero-header__bar hero-header__bar--3" />
+                  <span className="hero-header__bar hero-header__bar--4" />
+                  <span className="hero-header__bar hero-header__bar--5" />
+                </div>
+              </div>
+              <p className="hero-header__panel-copy">
+                Sintoniza sin ruido ni relleno.
+              </p>
+            </div>
+          </div>
         </header>
 
         <main className="text-center">
           {stationsData.length > 0 ? (
-            <div className="station-container">
+            <div id="stations-grid" className="station-container">
               {stationsData.map((station) => (
                 <RadioStationCard
                   key={station.id}

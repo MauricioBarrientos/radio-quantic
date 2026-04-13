@@ -161,15 +161,6 @@ const stations = [
     description:
       'Sumérgete en los ritmos relajantes del reggae con esta estación dedicada al género.',
   },
-  {
-    id: 22,
-    name: 'Vibe Fm',
-    frequency: 'Online',
-    cover:
-      'https://static.mytuner.mobi/media/tvos_radios/468/vibes-fm-938.d310f083.jpg',
-    url: 'https://a10.asurahosting.com:9040/radio.mp3?_ic2=1774657170016',
-    description: 'Vibes FM en vivo.',
-  },
 ]
 
 export default stations
